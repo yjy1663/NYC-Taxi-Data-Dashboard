@@ -1,0 +1,49 @@
+{
+  "variables": {
+    "aws_access_key":  "",
+    "aws_secret_key":  "",
+    "source_ami_id":   "",
+    "ami_name_prefix": ""
+  },
+
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-west-2",
+    "source_ami": "{{user `source_ami_id`}}",
+    "instance_type": "t2.micro",
+    "ssh_username": "ec2-user",
+    "ami_name": "{{user `ami_name_prefix`}} {{timestamp}}",
+    "vpc_id": "vpc-51a73336",
+    "subnet_id": "subnet-dd26e594"
+  }],
+
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "install_java.sh",
+      "destination": "/tmp/install_java.sh"
+    },
+
+    {
+      "type": "shell",
+      "inline": [
+        "sudo yum -y install yum-utils",
+        "sudo yum-config-manager --enable epel",
+        "sudo yum -y install emacs screen tmux iftop htop tcpdump wget strace lsof git",
+        "sudo yum -y install gcc gdb valgrind glibc.i686 glibc.x86_64 openssl-devel geos-devel",
+        "sudo yum -y install python27 python27-test python27-pip python27-devel",
+        "sudo yum -y install awslogs",
+        "sudo yum -y update",
+
+        "sudo yum -y remove java-1.7.0-openjdk",
+        "sudo sh /tmp/install_java.sh",
+        "sudo rm -rf /tmp/install_java.sh",
+
+        "sudo `which pip` install -U pip",
+        "sudo `which pip` install -U boto boto3 awscli ansible bokeh paramiko bytebuffer jmespath-terminal pandas shapely flexx"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "NoAction": [
+        "iam:*",
+        "ec2:RunInstances"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "NotResource": [
+	  	"arn:aws:ec2:us-west-2:*:instance",
+	  	"arn:aws:ec2:us-west-2:*:instance/*"
+	  ],
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+	  	"arn:aws:ec2:us-west-2:*:instance",
+	  	"arn:aws:ec2:us-west-2:*:instance/*"
+	  ],
+      "Condition": {
+	  	"StringLikeIfExists": {
+			"ec2:InstanceType": [
+        		"t1.*", "t2.*", "m3.*"
+      ]}}
+    }
+  ]
+}
